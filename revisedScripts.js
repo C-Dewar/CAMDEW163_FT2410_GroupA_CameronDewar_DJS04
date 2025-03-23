@@ -1,5 +1,4 @@
 import { books, authors, genres, BOOKS_PER_PAGE } from './data.js';
-
 let page = 1;
 let matches = books;
 
@@ -38,9 +37,34 @@ let previousPageCount;
 //Render the book list, to show initial/landing page or search results
 function renderBookList(booksToRender) {
   const fragment = document.createDocumentFragment();
-  booksToRender.forEach((book) =>
-    fragment.appendChild(renderBookPreview(book))
-  );
+  booksToRender.forEach((book) => {
+    const preview = document.createElement('book-preview'); // Create the book-preview web component
+    preview.setAttribute('book-id', book.id); // Set the book ID as an attribute
+    preview.setAttribute('title', book.title); // Set the title as an attribute
+    preview.setAttribute('author', authors[book.author]); // Set the author as an attribute
+    preview.setAttribute('image', book.image); // Set the image as an attribute
+
+    // Listen for the custom event 'book-selected' dispatched from the Web Component
+    preview.addEventListener('book-selected', (event) => {
+      const activeBook = books.find((book) => book.id === event.detail.bookId);
+      if (activeBook) {
+        // Update the book details view when the book is selected
+        document.querySelector('[data-list-active]').open = true;
+        document.querySelector('[data-list-blur]').src = activeBook.image;
+        document.querySelector('[data-list-image]').src = activeBook.image;
+        document.querySelector('[data-list-title]').innerText =
+          activeBook.title;
+        document.querySelector('[data-list-subtitle]').innerText = `${
+          authors[activeBook.author]
+        } (${new Date(activeBook.published).getFullYear()})`;
+        document.querySelector('[data-list-description]').innerText =
+          activeBook.description;
+      }
+    });
+
+    // Append the newly created book-preview element to the fragment
+    fragment.appendChild(preview);
+  });
   if (isSearch) {
     document.querySelector('[data-list-items]').innerHTML = '';
   }
