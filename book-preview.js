@@ -52,6 +52,8 @@ export class BookPreview extends HTMLElement {
   border-radius: 8px;
   border: 1px solid rgba(var(--color-dark), 0.15);
   background: rgba(var(--color-light), 1);
+  min-height: 140px; //Set minimum height for when a book has a single line title, to ensure the container/preview size is constant
+  height: 140px;
 }
 
 @media (min-width: 60rem) {
